@@ -1,0 +1,93 @@
+mysql> ^C
+mysql> Terminal close -- exit!
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+6 rows in set (0.01 sec)
+
+mysql> CREATE DATABASE IF NOT EXISTS university_db;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> CREATE TABLE students (
+    ->     student_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     name VARCHAR(255) NOT NULL,
+    ->     email VARCHAR(255) UNIQUE NOT NULL,
+    ->     password VARCHAR(255) NOT NULL
+    -> );
+ERROR 1046 (3D000): No database selected
+mysql> USE university_db;
+Database changed
+mysql> CREATE TABLE students (
+    ->     student_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     name VARCHAR(255) NOT NULL,
+    ->     email VARCHAR(255) UNIQUE NOT NULL,
+    ->     password VARCHAR(255) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> CREATE TABLE courses (
+    ->     course_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     name VARCHAR(255) NOT NULL,
+    ->     instructor VARCHAR(255) NOT NULL,
+    ->     credits INT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE registrations (
+    ->     reg_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     student_id INT,
+    ->     course_id INT,
+    ->     date DATE NOT NULL,
+    ->     FOREIGN KEY (student_id) REFERENCES students(student_id),
+    ->     FOREIGN KEY (course_id) REFERENCES courses(course_id)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> INSERT INTO students (name, email, password) VALUES
+    -> ('Kamal Perera', 'kamal.perera@example.com', 'pass123'),
+    -> ('Nimali Fernando', 'nimali.fernando@example.com', 'mypass');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO courses (name, instructor, credits) VALUES
+    -> ('Introduction to Programming', 'Dr. Silva', 3),
+    -> ('Database Management', 'Prof. Rajapakse', 4),
+    -> ('Web Development', 'Mr. Bandara', 3);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO registrations (student_id, course_id, date) VALUES
+    -> (1, 101, '2024-05-09'),
+    -> (2, 102, '2024-05-09'),
+    -> (1, 103, '2024-05-09');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`university_db`.`registrations`, CONSTRAINT `registrations_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `courses` (`course_id`))
+mysql> SELECT * FROM students;
++------------+-----------------+-----------------------------+----------+
+| student_id | name            | email                       | password |
++------------+-----------------+-----------------------------+----------+
+|          1 | Kamal Perera    | kamal.perera@example.com    | pass123  |
+|          2 | Nimali Fernando | nimali.fernando@example.com | mypass   |
++------------+-----------------+-----------------------------+----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM courses;
++-----------+-----------------------------+-----------------+---------+
+| course_id | name                        | instructor      | credits |
++-----------+-----------------------------+-----------------+---------+
+|         1 | Introduction to Programming | Dr. Silva       |       3 |
+|         2 | Database Management         | Prof. Rajapakse |       4 |
+|         3 | Web Development             | Mr. Bandara     |       3 |
++-----------+-----------------------------+-----------------+---------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM registrations;
+Empty set (0.00 sec)
+
